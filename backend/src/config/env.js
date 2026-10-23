@@ -28,9 +28,10 @@ if (!hasDbUrl && !hasPgVars) {
   );
 }
 
-// Aviso preparatório: JWT_SECRET obrigatório a partir da feature 003.
+// JWT_SECRET obrigatório a partir da feature 003 (assinatura/verificação do JWT).
+// Em testes, backend/tests/setup.env.js define JWT_SECRET=test-secret, então a exigência é relaxada.
 if (validated.NODE_ENV !== 'test' && !validated.JWT_SECRET) {
-  console.warn('[env] JWT_SECRET ausente — obrigatório a partir da feature 003 (autenticação JWT).');
+  throw new Error('JWT_SECRET é obrigatório a partir da feature 003 (autenticação JWT).');
 }
 
 const databaseConfig = hasDbUrl

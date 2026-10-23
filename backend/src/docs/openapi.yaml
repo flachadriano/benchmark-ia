@@ -19,6 +19,30 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Autenticação via JWT (definida na feature 003 - autenticacao-perfis).
+  schemas:
+    UserProfile:
+      type: object
+      required: [uid, email, perfil]
+      properties:
+        uid:
+          type: string
+          format: uuid
+          example: 3f9b1c2a-1b2c-4d2e-9a3f-6c8e7d5b1a00
+        email:
+          type: string
+          format: email
+          example: usuario@email.com.br
+        perfil:
+          type: string
+          enum: [usuario, gestor]
+          example: usuario
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: credenciais inválidas
 paths:
   /health:
     get:
@@ -55,4 +79,79 @@ paths:
                   db:
                     type: string
                     example: down
-  # Endpoints de domínio (/api/*) serão adicionados pelas features 003-007.
+  /api/auth/login:
+    post:
+      tags: [Autenticação]
+      summary: Autentica usuário e emite JWT
+      description: |
+        Valida e-mail e senha (>= 8). Em caso de sucesso, retorna um token JWT
+        (HS256) com payload { sub, email, perfil } e o objeto do usuário.
+        Em caso de credenciais inválidas, responde 401 com mensagem genérica
+        ("credenciais inválidas") — não distingue e-mail inexistente de senha errada.
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, senha]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: usuario@email.com.br
+                senha:
+                  type: string
+                  minLength: 8
+                  format: password
+                  example: usuario123
+      responses:
+        '200':
+          description: Token JWT e dados do usuário autenticado.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [token, user]
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: E-mail ausente/inválido ou senha com menos de 8 caracteres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Credenciais inválidas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/auth/me:
+    get:
+      tags: [Autenticação]
+      summary: Perfil do usuário autenticado
+      description: Retorna { uid, email, perfil } do portador do token (do payload do JWT).
+      operationId: getMe
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do usuário autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Token ausente ou inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  # Endpoints de domínio (/api/apontamentos, /api/resumo, /api/gestao) serão adicionados pelas features 004-007.

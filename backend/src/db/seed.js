@@ -1,31 +1,46 @@
-const pool = require('./client');
+// Seed de domínio (feature 003): garante os 2 usuários de demonstração.
+// Idempotente via ON CONFLICT (lower(email)) DO NOTHING — reexecução segura.
+// `pool` é injetável p/ testes (mesmo padrão do healthService/authService).
+const { hashPassword } = require('../services/passwordService');
 
-async function seed() {
-  const client = await pool.connect();
+const USERS = [
+  { email: 'usuario@email.com.br', plain: 'usuario123', perfil: 'usuario' },
+  { email: 'gestor@gmail.com.br', plain: 'gestor123', perfil: 'gestor' },
+];
+
+async function seed(pool) {
+  const client = await (pool || require('./client')).connect();
   try {
-    // Verifica se o schema de negócio já existe (definido pelas features 003-007).
-    const { rows } = await client.query(
-      `SELECT to_regclass('public.usuarios') AS usuarios`
-    );
-    if (rows[0].usuarios) {
-      // A seed de domínio (usuários, apontamentos) é definida pela feature 003.
-      console.log('[seed] Tabela de domínio "usuarios" presente — seed de negócio delegada à feature 003.');
-    } else {
-      console.log('[seed] Nenhum schema de negócio definido nesta feature (002) — nada a semear.');
-      console.log('[seed] As seeds de domínio serão adicionadas pelas features 003-007.');
+    await client.query('BEGIN');
+    for (const u of USERS) {
+      await client.query(
+        `INSERT INTO "usuários" (email, senha, perfil)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (lower(email)) DO NOTHING`,
+        [u.email.toLowerCase(), hashPassword(u.plain), u.perfil]
+      );
     }
-    console.log('[seed] Operação idempotente concluída com sucesso.');
+    await client.query('COMMIT');
+    console.log('[seed] 2 usuários garantidos (idempotente).');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
   } finally {
     client.release();
   }
 }
 
-seed()
-  .then(() => {
-    console.log('[seed] Concluído com sucesso.');
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error('[seed] Erro:', err.message);
-    process.exit(1);
-  });
+module.exports = { seed, USERS };
+
+if (require.main === module) {
+  seed()
+    .then(() => {
+      console.log('[seed] Concluído com sucesso.');
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error('[seed] Erro:', err.message);
+      process.exit(1);
+    });
+}
+

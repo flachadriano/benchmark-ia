@@ -7,6 +7,7 @@ const swaggerUi = require('swagger-ui-express');
 
 const env = require('./config/env');
 const { createHealthRouter } = require('./routes/health');
+const { createAuthRouter } = require('./routes/auth');
 
 const openapiPath = path.join(__dirname, 'docs', 'openapi.yaml');
 const openapiDocument = yaml.load(fs.readFileSync(openapiPath, 'utf8'));
@@ -29,7 +30,10 @@ function createApp({ pool: injectedPool } = {}) {
   // Rotas de infraestrutura (pool injetado)
   app.use(createHealthRouter(db));
 
-  // Base da API (domínio). As rotas de domínio (features 003-007) serão
+  // Rotas de autenticação (feature 003): /api/auth/login, /api/auth/me
+  app.use('/api/auth', createAuthRouter(db));
+
+  // Base da API (domínio). As rotas de domínio (features 004-007) serão
   // montadas sob o prefixo /api a partir das próximas features.
   app.get('/api', (_req, res) =>
     res.json({ name: 'benchmark-api', version: '1.0.0', docs: '/api-docs' })
@@ -38,10 +42,12 @@ function createApp({ pool: injectedPool } = {}) {
   // 404
   app.use((_req, res) => res.status(404).json({ error: 'Not found' }));
 
-  // Erros
+  // Erros: usa err.status (definido pelos middlewares/controllers) ou 500,
+  // e responde sempre { "error": "<mensagem>" } (não vaza stack em produção).
   app.use((err, _req, res, _next) => {
-    console.error('[app] erro:', err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    const status = err.status || 500;
+    if (status >= 500) console.error('[app] erro:', err.message);
+    res.status(status).json({ error: err.message || 'Internal server error' });
   });
 
   return app;
