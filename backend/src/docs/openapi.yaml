@@ -1,0 +1,58 @@
+openapi: 3.1.0
+info:
+  title: API de Apontamento de Horas
+  version: 1.0.0
+  description: |
+    API REST do sistema de Apontamento de Horas (benchmark-ia).
+    Esta feature (002) expõe apenas o endpoint de healthcheck e a documentação.
+    As rotas de domínio (autenticação, apontamentos, resumo e visão do gestor)
+    são adicionadas pelas features 003-007, todas sob o prefixo /api.
+  contact:
+    name: benchmark-ia
+servers:
+  - url: http://localhost:3000
+    description: Desenvolvimento local
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Autenticação via JWT (definida na feature 003 - autenticacao-perfis).
+paths:
+  /health:
+    get:
+      tags: [Infraestrutura]
+      summary: Healthcheck de readiness
+      description: Verifica a disponibilidade do serviço e do banco de dados (SELECT 1).
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: Serviço saudável e banco de dados disponível.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, db]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  db:
+                    type: string
+                    example: up
+        '503':
+          description: Banco de dados indisponível.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: degraded
+                  db:
+                    type: string
+                    example: down
+  # Endpoints de domínio (/api/*) serão adicionados pelas features 003-007.
