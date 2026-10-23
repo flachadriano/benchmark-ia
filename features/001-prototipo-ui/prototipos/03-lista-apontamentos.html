@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de apontamentos — Apontamento de Horas</title>
+<style>
+  :root{
+    --primary:#4f46e5; --primary-hover:#4338ca; --bg:#f1f5f9; --card:#ffffff;
+    --border:#e2e8f0; --text:#0f172a; --muted:#64748b; --danger:#dc2626; --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px}
+  .brand{font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
+  .brand .dot{width:28px;height:28px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .spacer{flex:1}
+  .user{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:#c7d2fe;color:#3730a3;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+  main{max-width:1040px;margin:0 auto;padding:28px 24px}
+  .page-title{font-size:22px;font-weight:700}
+  .page-sub{color:var(--muted);font-size:14px;margin-top:4px;margin-bottom:22px}
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:16px}
+  .btn{padding:11px 22px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text);display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{background:#f8fafc}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-hover)}
+  .btn svg{width:16px;height:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+  thead{background:#f8fafc}
+  th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:14px 16px;border-bottom:1px solid var(--border)}
+  td{padding:14px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:#fafbfc}
+  .col-time{white-space:nowrap}
+  .total-cell{font-weight:600;color:#3730a3}
+  .actions-cell{display:flex;gap:8px}
+  .icon-btn{width:34px;height:34px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .icon-btn:hover{background:#f8fafc;color:var(--text)}
+  .icon-btn.danger:hover{background:#fef2f2;color:var(--danger);border-color:#fecaca}
+  .icon-btn svg{width:16px;height:16px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="dot">A</span>Apontamento de Horas</div>
+    <div class="spacer"></div>
+    <div class="user"><span>Olá, Ana</span><span class="avatar">AN</span></div>
+  </header>
+  <main>
+    <h1 class="page-title">Meus apontamentos</h1>
+    <p class="page-sub">Lista de horas registradas por você.</p>
+    <div class="toolbar">
+      <button type="button" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Cadastrar apontamento
+      </button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Projeto</th>
+              <th>Data</th>
+              <th class="col-time">Hora inicial</th>
+              <th class="col-time">Hora final</th>
+              <th class="col-time">Total de horas</th>
+              <th>Editar</th>
+              <th>Excluir</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Portal do Cliente</td>
+              <td>20/10/2026</td>
+              <td class="col-time">09:00</td>
+              <td class="col-time">12:30</td>
+              <td class="col-time total-cell">03:30</td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn danger" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td>
+            </tr>
+            <tr>
+              <td>App Mobile</td>
+              <td>20/10/2026</td>
+              <td class="col-time">14:00</td>
+              <td class="col-time">18:00</td>
+              <td class="col-time total-cell">04:00</td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn danger" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td>
+            </tr>
+            <tr>
+              <td>Integração SAP</td>
+              <td>19/10/2026</td>
+              <td class="col-time">08:30</td>
+              <td class="col-time">12:00</td>
+              <td class="col-time total-cell">03:30</td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn danger" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td>
+            </tr>
+            <tr>
+              <td>Portal do Cliente</td>
+              <td>19/10/2026</td>
+              <td class="col-time">13:00</td>
+              <td class="col-time">17:15</td>
+              <td class="col-time total-cell">04:15</td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn" aria-label="Editar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+              <td><div class="actions-cell"><button type="button" class="icon-btn danger" aria-label="Excluir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
